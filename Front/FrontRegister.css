@@ -80,7 +80,7 @@ section{
     color: #fff;
     font-size: 1rem;
     pointer-events: none;
-    transition: 6s;
+    transition: .3s;
     font-weight: bold;
 }
 
