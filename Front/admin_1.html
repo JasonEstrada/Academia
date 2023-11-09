@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin</title>
+  </head>
+  <body>
+    <div class="pageContainer">
+      <header>
+        <nav>
+          <a href="login.html">Inicio</a>
+        </nav>
+      </header>
+      <div class="tabla">
+        <table id="personDataTable">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Programa</th>
+              <th scope="col">Paso 1</th>
+              <th scope="col">Paso 2</th>
+              <th scope="col">Paso 3</th>
+              <th scope="col">Periodo</th>
+            </tr>
+          </thead>
+          <tbody id="personDataTableTbody"></tbody>
+        </table>
+      </div>
+      <div class="filtroPeriodo">
+        <h1>Periodo</h1>
+        <form id="periodoForm">
+          <div>
+            <label for="periodo"></label>
+            <input id="periodo" name="periodo" />
+
+
+            <!--
+                
+                <form action="#">
+                <label for="lang">Lenguaje</label>
+                <select name="lenguajes" id="lang">
+                  <option value="javascript">JavaScript</option>
+                  <option value="php">PHP</option>
+                  <option value="java">Java</option>
+                  <option value="golang">Golang</option>
+                  <option value="python">Python</option>
+                  <option value="c#">C#</option>
+                  <option value="C++">C++</option>
+                  <option value="erlang">Erlang</option>
+                </select>
+                <input type="submit" value="Enviar" />
+          </form> 
+        
+        -->
+
+          </div>
+          <div class="buttonContainer">
+            <button type="submit">Buscar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  nav > * {
+    display: block;
+    margin-top: 20px;
+    font-size: larger;
+  }
+
+  .pageContainer {
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  #CreatePersonForm > * {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  #CreatePersonForm {
+    text-align: right;
+  }
+
+  .buttonContainer {
+    display: inline;
+    text-align: center;
+  }
+
+  tr > * {
+    padding: 10px;
+    border: 1px solid red;
+    text-align: center;
+  }
+</style>
+
+<script src="index.js"></script>
