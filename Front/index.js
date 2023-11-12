@@ -50,6 +50,17 @@ form_periodo2.addEventListener("submit", (event) => {
   );
 });
 
+const form_periodo3 = document.getElementById("periodoForm3");
+
+form_periodo3.addEventListener("submit", (event) => {
+  event.preventDefault();
+  refreshTable(
+    "http://127.0.0.1:3000/estXprog?periodo3=" +
+      document.getElementById("periodo3").value,
+    "estXprogTbody"
+  );
+});
+
 const form_fecha = document.getElementById("fechaForm");
 
 form_fecha.addEventListener("submit", (event) => {
@@ -64,6 +75,27 @@ form_fecha.addEventListener("submit", (event) => {
 async function deleteFiltroFecha() {
   refreshTable("http://127.0.0.1:3000/aspirantesDia", "aspirantesDiaTbody");
 }
+
+const form_programas = document.getElementById("programaForm");
+
+form_programas.addEventListener("submit", (event) => {
+  if (document.getElementById("programa").value != "todo") {
+    event.preventDefault();
+    refreshTable(
+      "http://127.0.0.1:3000/filtrarPrograma?programa=" +
+        document.getElementById("programa").value +
+        " - " +
+        document.getElementById("periodo3").value,
+      "estXprogTbody"
+    );
+  } else {
+    refreshTable(
+      "http://127.0.0.1:3000/estXprog?periodo3=" +
+        document.getElementById("periodo3").value,
+      "estXprogTbody"
+    );
+  }
+});
 
 async function refreshTable(link, table) {
   const people = await getPeopleFromAPI(link);
@@ -124,6 +156,22 @@ function addPersonToTable(person, table) {
     cell1.innerHTML = person.prog_id;
     cell2.innerHTML = person.prog_nombre;
     cell3.innerHTML = person.cantidad_inscripciones;
+  } else if (table == "estXprogTbody") {
+    const row = personDataTable.insertRow(-1);
+
+    const cell1 = row.insertCell(0);
+    const cell2 = row.insertCell(1);
+    const cell3 = row.insertCell(2);
+    const cell4 = row.insertCell(3);
+    const cell5 = row.insertCell(4);
+    const cell6 = row.insertCell(5);
+
+    cell1.innerHTML = person.asp_id;
+    cell2.innerHTML = person.nombre;
+    cell3.innerHTML = person.prog_nombre;
+    cell4.innerHTML = person.periodo;
+    cell5.innerHTML = person.ins_id;
+    cell6.innerHTML = person.requisitos;
   }
 }
 
@@ -137,12 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("fecha").value = obtenerFechaActual();
   document.getElementById("fecha").max = obtenerFechaActual();
   cargarFiltroPeriodo();
-
-  refreshTable(
-    "http://127.0.0.1:3000/insXprog?periodo2=" +
-      document.getElementById("periodo2").value,
-    "insXprogTbody"
-  );
+  cargarFiltroProgramas();
 });
 
 function obtenerFechaActual() {
@@ -159,6 +202,7 @@ async function cargarFiltroPeriodo() {
 
   var periodoSelect = document.getElementById("periodo");
   var periodoSelect2 = document.getElementById("periodo2");
+  var periodoSelect3 = document.getElementById("periodo3");
   // Agregar las opciones al elemento select
   periodos.forEach(function (periodo) {
     var option1 = document.createElement("option");
@@ -171,5 +215,25 @@ async function cargarFiltroPeriodo() {
     option2.value = periodo.periodo;
     option2.text = periodo.periodo;
     periodoSelect2.add(option2);
+
+    var option3 = document.createElement("option");
+    option3.value = periodo.periodo;
+    option3.text = periodo.periodo;
+    periodoSelect3.add(option3);
+  });
+}
+
+async function cargarFiltroProgramas() {
+  const response = await fetch("http://127.0.0.1:3000/programas");
+  const programa = await response.json();
+
+  var programaSelect = document.getElementById("programa");
+  // Agregar las opciones al elemento select
+  programa.forEach(function (programa) {
+    console.log(programa);
+    var option = document.createElement("option");
+    option.value = programa.programa;
+    option.text = programa.programa;
+    programaSelect.add(option);
   });
 }

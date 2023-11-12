@@ -30,7 +30,7 @@
         </table>
       </div>
       <div>
-        <h1>Filtrar por periodo</h1>
+        <h2>Filtrar por periodo</h2>
         <form id="periodoForm" action="#">
           <label for="periodo">Periodo</label>
           <select name="periodo" id="periodo">
@@ -54,7 +54,7 @@
         </table>
       </div>
       <div>
-        <h1>Filtrar por fecha</h1>
+        <h2>Filtrar por fecha</h2>
         <form id="fechaForm" action="#">
           <input type="date" id="fecha" name="fecha" />
           <input type="submit" value="Enviar" />
@@ -81,6 +81,39 @@
           </thead>
           <tbody id="insXprogTbody"></tbody>
         </table>
+      </div>
+
+
+      <div class="tabla">
+        <h1>Estudiantes por Programa</h1>
+        <h3>Seleccionar periodo</h3>
+        <form id="periodoForm3" action="#">
+          <label for="periodo3">Periodo</label>
+          <select name="periodo3" id="periodo3">
+          </select>
+          <input type="submit" value="Enviar" />
+        </form>
+        <table id="estXprog">
+          <thead>
+            <tr>
+              <th scope="col">Usuario</th>
+              <th scope="col">Nombre estudiante</th>
+              <th scope="col">Nombre programa</th>
+              <th scope="col">Periodo</th>
+              <th scope="col">ID inscripción</th>
+              <th scope="col">Requisitos</th>
+            </tr>
+          </thead>
+          <tbody id="estXprogTbody"></tbody>
+        </table>
+        <h2>Filtrar por programa</h2>
+        <form id="programaForm" action="#">
+          <label for="programa">Programa</label>
+          <select name="programa" id="programa">
+            <option value="todo">Todos</option>
+          </select>
+          <input type="submit" value="Enviar" />
+        </form>
       </div>
     </div>
   </body>

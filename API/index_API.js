@@ -19,9 +19,26 @@ app.get("/periodos", async (req, res) => {
   res.send(periodos);
 });
 
+app.get("/programas", async (req, res) => {
+  const programas = await getProgramas();
+  res.send(programas);
+});
+
 app.get("/insXprog", async (req, res) => {
   const periodo = req.query.periodo2;
   const people = await getInscripcionesPorPrograma(periodo);
+  res.send(people);
+});
+
+app.get("/estXprog", async (req, res) => {
+  const periodo = req.query.periodo3;
+  const people = await getEstudiantesPorPrograma(periodo);
+  res.send(people);
+});
+
+app.get("/filtrarPrograma", async (req, res) => {
+  const filtro = req.query.programa;
+  const people = await getEstXprogFiltrado(filtro);
   res.send(people);
 });
 
@@ -111,6 +128,36 @@ async function getPeriodos() {
 
     await client.connect();
     const query = `select distinct(periodo) from Inscripciones`;
+
+    console.log("Se está ejecuntando " + query);
+
+    const res = await client.query(query);
+
+    await client.end();
+
+    return res.rows;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getProgramas() {
+  try {
+    const client = new Client({
+      user: "postgres",
+      host: "localhost",
+      database: "Academia",
+      password: "13102003",
+      port: 5432,
+      //ssl: {
+      //rejectUnauthorized: false,
+      //},
+    });
+
+    await client.connect();
+    const query = `select distinct(I.prog_id || ' - ' || P.prog_nombre) as programa 
+    from Inscripciones I inner join Programas P on I.prog_ID = P.prog_ID 
+    order by programa`;
 
     console.log("Se está ejecuntando " + query);
 
@@ -258,8 +305,112 @@ async function getInscripcionesPorPrograma(periodo) {
     });
 
     await client.connect();
-    const query = `select P.prog_ID, P.prog_nombre, count(1) Cantidad_inscripciones from Inscripciones I inner join Programas P on I.prog_ID = P.prog_ID where I.periodo = '` + periodo + `' group by P.prog_ID order by Cantidad_inscripciones;`;
+    const query =
+      `select P.prog_ID, P.prog_nombre, count(1) Cantidad_inscripciones from Inscripciones I inner join Programas P on I.prog_ID = P.prog_ID where I.periodo = '` +
+      periodo +
+      `' group by P.prog_ID order by Cantidad_inscripciones;`;
 
+    console.log("Se está ejecuntando " + query);
+
+    const res = await client.query(query);
+
+    await client.end();
+
+    return res.rows;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getEstudiantesPorPrograma(periodo) {
+  try {
+    const client = new Client({
+      user: "postgres",
+      host: "localhost",
+      database: "Academia",
+      password: "13102003",
+      port: 5432,
+      //ssl: {
+      //rejectUnauthorized: false,
+      //},
+    });
+
+    await client.connect();
+    const query = `SELECT 
+    I.asp_ID,
+    (A.p_nombre || ' ' || A.s_nombre || ' ' || A.p_apellido || ' ' || A.d_apellido) as Nombre,
+    P.prog_nombre,
+    I.periodo,
+    I.ins_ID,
+    STRING_AGG(Req.req_nombre, ', ') as Requisitos
+    FROM 
+        Inscripciones I
+    INNER JOIN 
+        Programas P ON I.prog_ID = P.prog_ID
+    INNER JOIN 
+        Aspirantes A ON A.asp_ID = I.asp_ID
+    INNER JOIN 
+        Requisitos_aspirantes R ON I.ins_ID = R.ins_ID
+    INNER JOIN 
+        Requerimientos Req ON R.req_ID = Req.req_ID 
+    WHERE 
+        I.periodo = '` + periodo + `'
+    GROUP BY 
+        I.asp_ID, A.p_nombre, A.s_nombre, A.p_apellido, A.d_apellido, P.prog_nombre, I.periodo, I.ins_ID;`;
+
+    console.log("Se está ejecuntando " + query);
+
+    const res = await client.query(query);
+
+    await client.end();
+
+    return res.rows;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getEstXprogFiltrado(filtro) {
+
+  console.log(filtro)
+  
+  var filtrado = filtro.split(' - ');
+
+  try {
+    const client = new Client({
+      user: "postgres",
+      host: "localhost",
+      database: "Academia",
+      password: "13102003",
+      port: 5432,
+      //ssl: {
+      //rejectUnauthorized: false,
+      //},
+    });
+
+    await client.connect();
+    const query = `SELECT 
+    I.asp_ID,
+    (A.p_nombre || ' ' || A.s_nombre || ' ' || A.p_apellido || ' ' || A.d_apellido) as Nombre,
+    P.prog_nombre,
+    I.periodo,
+    I.ins_ID,
+    STRING_AGG(Req.req_nombre, ', ') as Requisitos
+    FROM 
+        Inscripciones I
+    INNER JOIN 
+        Programas P ON I.prog_ID = P.prog_ID
+    INNER JOIN 
+        Aspirantes A ON A.asp_ID = I.asp_ID
+    INNER JOIN 
+        Requisitos_aspirantes R ON I.ins_ID = R.ins_ID
+    INNER JOIN 
+        Requerimientos Req ON R.req_ID = Req.req_ID 
+    WHERE 
+        I.periodo = '` + filtrado[2] + `'
+        and P.prog_ID = '` + filtrado[0] + `'
+    GROUP BY 
+        I.asp_ID, A.p_nombre, A.s_nombre, A.p_apellido, A.d_apellido, P.prog_nombre, I.periodo, I.ins_ID;`;
     console.log("Se está ejecuntando " + query);
 
     const res = await client.query(query);
