@@ -371,8 +371,6 @@ async function getEstudiantesPorPrograma(periodo) {
 }
 
 async function getEstXprogFiltrado(filtro) {
-
-  console.log(filtro)
   
   var filtrado = filtro.split(' - ');
 
