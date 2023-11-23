@@ -1,156 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title id="titulo">Admin</title>
-  </head>
-  <body>
-    <div class="pageContainer">
-      <header>
-        <nav>
-          <a href="login.html">Inicio</a>
-          <a href="admin_2.html">Programas</a>
-        </nav>
-      </header>
-      <div class="tabla">
-        <h1>Aspirantes por periodo</h1>
+
+<head>
+  <meta charset="UTF-8">
+  <script src="https://kit.fontawesome.com/006012d854.js" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="FrontAdmin.css">
+  <link rel="shortcut icon" type="image/png" href="notebook_6711297.png">
+  <title>I.E Sabiduria | Administrador</title>
+</head>
+
+<body>
+  <main>
+    <p><a href="login.html">Inicio</a></p>
+    <section>
+      <div class="formulario">
+        <form action="#">
+          <div class="contenedor">
+            <h1>Aspirantes por Periodo</h1>
+            <div class="filtro">
+              <h2>Filtrar por Periodo:</h2>
+              <form id="periodoForm" action="#"></form>
+              <select name="periodo" id="periodo">
+                <option value="todo">Todos</option>
+              </select>
+              <i></i>
+              <div class="bsub">
+                <input type="submit" value="Enviar" />
+              </div>
+        </form>
+      </div>
+      <div class="tabla1">
         <table id="personDataTable">
           <thead>
             <tr>
               <th scope="col">ID</th>
               <th scope="col">Nombre</th>
               <th scope="col">Programa</th>
-              <th scope="col">Paso 1</th>
-              <th scope="col">Paso 2</th>
-              <th scope="col">Paso 3</th>
+              <th scope="col">S1 Queremos Conocerte</th>
+              <th scope="col">S2 Servicio a Contratar</th>
+              <th scope="col">S3 Deseo de Contratación</th>
               <th scope="col">Periodo</th>
             </tr>
           </thead>
           <tbody id="personDataTableTbody"></tbody>
         </table>
       </div>
-      <div>
-        <h2>Filtrar por periodo</h2>
-        <form id="periodoForm" action="#">
-          <label for="periodo">Periodo</label>
-          <select name="periodo" id="periodo">
-            <option value="todo">Todos</option>
-          </select>
-          <input type="submit" value="Enviar" />
-        </form>
+      </div>
+      </form>
       </div>
 
-      <div class="tabla">
-        <h1>Inscripciones Diarias</h1>
-        <table id="aspirantesDia">
-          <thead>
-            <tr>
-              <th scope="col">Fecha de inscripción</th>
-              <th scope="col">Periodo</th>
-              <th scope="col">Cantidad de inscripciones</th>
-            </tr>
-          </thead>
-          <tbody id="aspirantesDiaTbody"></tbody>
-        </table>
-      </div>
-      <div>
-        <h2>Filtrar por fecha</h2>
-        <form id="fechaForm" action="#">
-          <input type="date" id="fecha" name="fecha" />
-          <input type="submit" value="Enviar" />
-          <input type="button" value="Eliminar" onclick="deleteFiltroFecha()" />
-        </form>
-      </div>
+    </section>
 
-      <div class="tabla">
-        <h1>Inscripciones por Programa</h1>
-        <h3>Seleccionar periodo</h3>
-        <form id="periodoForm2" action="#">
-          <label for="periodo2">Periodo</label>
-          <select name="periodo2" id="periodo2">
-          </select>
-          <input type="submit" value="Enviar" />
-        </form>
-        <table id="insXprog">
-          <thead>
-            <tr>
-              <th scope="col">ID Programa</th>
-              <th scope="col">Programa</th>
-              <th scope="col">Cantidad de inscripciones</th>
-            </tr>
-          </thead>
-          <tbody id="insXprogTbody"></tbody>
-        </table>
-      </div>
-
-
-      <div class="tabla">
-        <h1>Estudiantes por Programa</h1>
-        <h3>Seleccionar periodo</h3>
-        <form id="periodoForm3" action="#">
-          <label for="periodo3">Periodo</label>
-          <select name="periodo3" id="periodo3">
-          </select>
-          <input type="submit" value="Enviar" />
-        </form>
-        <table id="estXprog">
-          <thead>
-            <tr>
-              <th scope="col">Usuario</th>
-              <th scope="col">Nombre estudiante</th>
-              <th scope="col">Nombre programa</th>
-              <th scope="col">Periodo</th>
-              <th scope="col">ID inscripción</th>
-              <th scope="col">Requisitos</th>
-            </tr>
-          </thead>
-          <tbody id="estXprogTbody"></tbody>
-        </table>
-        <h2>Filtrar por programa</h2>
-        <form id="programaForm" action="#">
-          <label for="programa">Programa</label>
-          <select name="programa" id="programa">
-            <option value="todo">Todos</option>
-          </select>
-          <input type="submit" value="Enviar" />
+    <section>
+      <div class="formulario">
+        <form action="#">
+          <div class="contenedor">
+            <h1>Inscripciones Diarias</h1>
+            <div class="ffecha">
+              <h2>Filtrar por Fecha:</h2>
+              <form id="fechaForm" action="#">
+                <input type="date" id="fecha" name="fecha" />
+                <div class="bsub2">
+                  <input type="submit" value="Enviar" />
+                </div>
+                <div class="bdel">
+                  <input type="button" value="Eliminar" onclick="deleteFiltroFecha()" />
+                </div>
+              </form>
+            </div>
+            <div class="tabla2">
+              <table id="aspirantesDia">
+                <thead>
+                  <tr>
+                    <th scope="col">Fecha de inscripción</th>
+                    <th scope="col">Periodo</th>
+                    <th scope="col">Cantidad de inscripciones</th>
+                  </tr>
+                </thead>
+                <tbody id="aspirantesDiaTbody"></tbody>
+              </table>
+            </div>
+          </div>
         </form>
       </div>
-    </div>
-  </body>
+    </section>
+
+    <section>
+      <div class="formulario">
+        <form action="#">
+          <div class="contenedor">
+            <h1>Inscripciones por Programa</h1>
+            <div class="selp">
+              <h2>Seleccionar Periodo:</h2>
+              <form id="periodoForm2" action="#">
+                <select name="periodo2" id="periodo2">
+                  <i></i>
+                </select>
+                <i></i>
+                <div class="bsub3">
+                  <input type="submit" value="Enviar" />
+                </div>
+              </form>
+            </div>
+            <div class="tabla3">
+              <table id="insXprog">
+                <thead>
+                  <tr>
+                    <th scope="col">ID Programa</th>
+                    <th scope="col">Programa</th>
+                    <th scope="col">Cantidad de inscripciones</th>
+                  </tr>
+                </thead>
+                <tbody id="insXprogTbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </section>
+
+    <section>
+      <div class="formulario">
+        <form action="#">
+          <div class="contenedor">
+            <h1>Estudiantes por Programa</h1>
+            <div class="fprog">
+              <div class="f1">
+                <h2>Seleccionar Periodo:</h2>
+                <form id="periodoForm3" action="#">
+                  <select name="periodo3" id="periodo3">
+                  </select>
+                  <i></i>
+                  <div class="subsecp">
+                    <input type="submit" value="Enviar" />
+                  </div>
+                </form>
+              </div>
+
+              <div class="f2">
+                <h2>Filtrar por Programa:</h2>
+                <form id="programaForm" action="#">
+                  <select name="programa" id="programa">
+                    <option value="todo">Todos</option>
+                  </select>
+                  <i></i>
+              </div>
+                <div class="subfilp">
+                  <input type="submit" value="Enviar" />
+                </div>
+              </form>
+            </div>
+            <div class="tabla4">
+              <table id="estXprog">
+                <thead>
+                  <tr>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Nombre estudiante</th>
+                    <th scope="col">Nombre programa</th>
+                    <th scope="col">Periodo</th>
+                    <th scope="col">ID inscripción</th>
+                    <th scope="col">Requisitos</th>
+                  </tr>
+                </thead>
+                <tbody id="estXprogTbody"></tbody>
+              </table>
+
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+</body>
 </html>
-
-<style>
-  nav > * {
-    display: block;
-    margin-top: 20px;
-    font-size: larger;
-  }
-
-  .pageContainer {
-    display: block;
-    justify-content: space-evenly;
-  }
-
-  #CreatePersonForm > * {
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
-
-  #CreatePersonForm {
-    text-align: right;
-  }
-
-  .buttonContainer {
-    display: inline;
-    text-align: center;
-  }
-
-  tr > * {
-    padding: 10px;
-    border: 1px solid red;
-    text-align: center;
-  }
-</style>
-
 <script src="index.js"></script>
