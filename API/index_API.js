@@ -11,7 +11,25 @@ app.use(express.json());
 app.post("/registerUser", (req, res) => {
   const userData = req.body;
   saveUserInDB(userData);
-  res.send("Register user");
+  res.send("Usuario registrado");
+});
+
+app.post("/agregarPrograma", (req, res) => {
+  const programaData = req.body;
+  saveProgramaInDB(programaData);
+  res.send("Programa agregado");
+});
+
+app.post("/agregarAsignatura", (req, res) => {
+  const asignaturaData = req.body;
+  saveAsignaturaInDB(asignaturaData);
+  res.send("Asignatura agregada");
+});
+
+app.post("/actualizarPrograma", (req, res) => {
+  const programaData = req.body;
+  updateProgramaInDB(programaData);
+  res.send("Programa actualizado");
 });
 
 app.get("/periodos", async (req, res) => {
@@ -19,9 +37,20 @@ app.get("/periodos", async (req, res) => {
   res.send(periodos);
 });
 
-app.get("/programas", async (req, res) => {
-  const programas = await getProgramas();
+app.get("/programas2", async (req, res) => {
+  const programas = await getProgramas2();
   res.send(programas);
+});
+
+app.get("/programas", async (req, res) => {
+  const op = req.query.op;
+  const programas = await getProgramas(op);
+  res.send(programas);
+});
+
+app.get("/requerimientos", async (req, res) => {
+  const requerimientos = await getRequerimientos();
+  res.send(requerimientos);
 });
 
 app.get("/insXprog", async (req, res) => {
@@ -39,6 +68,18 @@ app.get("/estXprog", async (req, res) => {
 app.get("/filtrarPrograma", async (req, res) => {
   const filtro = req.query.programa;
   const people = await getEstXprogFiltrado(filtro);
+  res.send(people);
+});
+
+app.get("/filtrarPrograma2", async (req, res) => {
+  const filtro = req.query.programa;
+  const people = await getProgramaFiltrado(filtro);
+  res.send(people);
+});
+
+app.get("/programaAsig", async (req, res) => {
+  const programa = req.query.programa;
+  const people = await getAsignaturasPrograma(programa);
   res.send(people);
 });
 
@@ -141,7 +182,7 @@ async function getPeriodos() {
   }
 }
 
-async function getProgramas() {
+async function getProgramas(op) {
   try {
     const client = new Client({
       user: "postgres",
@@ -155,9 +196,49 @@ async function getProgramas() {
     });
 
     await client.connect();
-    const query = `select distinct(I.prog_id || ' - ' || P.prog_nombre) as programa 
+
+    var query = "";
+
+    if (op == 1) {
+      query = `select distinct(I.prog_id || ' - ' || P.prog_nombre) as programa 
     from Inscripciones I inner join Programas P on I.prog_ID = P.prog_ID 
     order by programa`;
+    } else {
+      query = `select (prog_ID || ' - ' || prog_nombre) as programa from (
+        select P.*, STRING_AGG(RP.req_ID, ', ') as Requisitos from programas P 
+        left join Requerimientos_programa RP on P.prog_ID = RP.prog_ID
+        group by P.prog_ID)`;
+    }
+
+    console.log("Se está ejecuntando " + query);
+
+    const res = await client.query(query);
+
+    await client.end();
+
+    return res.rows;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getProgramas2() {
+  try {
+    const client = new Client({
+      user: "postgres",
+      host: "localhost",
+      database: "Academia",
+      password: "13102003",
+      port: 5432,
+      //ssl: {
+      //rejectUnauthorized: false,
+      //},
+    });
+
+    await client.connect();
+    const query = `select P.*, STRING_AGG(RP.req_ID, ', ') as Requisitos from programas P 
+    left join Requerimientos_programa RP on P.prog_ID = RP.prog_ID
+    group by P.prog_ID`;
 
     console.log("Se está ejecuntando " + query);
 
@@ -336,7 +417,8 @@ async function getEstudiantesPorPrograma(periodo) {
     });
 
     await client.connect();
-    const query = `SELECT 
+    const query =
+      `SELECT 
     I.asp_ID,
     (A.p_nombre || ' ' || A.s_nombre || ' ' || A.p_apellido || ' ' || A.d_apellido) as Nombre,
     P.prog_nombre,
@@ -354,7 +436,9 @@ async function getEstudiantesPorPrograma(periodo) {
     INNER JOIN 
         Requerimientos Req ON R.req_ID = Req.req_ID 
     WHERE 
-        I.periodo = '` + periodo + `'
+        I.periodo = '` +
+      periodo +
+      `'
     GROUP BY 
         I.asp_ID, A.p_nombre, A.s_nombre, A.p_apellido, A.d_apellido, P.prog_nombre, I.periodo, I.ins_ID;`;
 
@@ -371,8 +455,7 @@ async function getEstudiantesPorPrograma(periodo) {
 }
 
 async function getEstXprogFiltrado(filtro) {
-  
-  var filtrado = filtro.split(' - ');
+  var filtrado = filtro.split(" - ");
 
   try {
     const client = new Client({
@@ -387,7 +470,8 @@ async function getEstXprogFiltrado(filtro) {
     });
 
     await client.connect();
-    const query = `SELECT 
+    const query =
+      `SELECT 
     I.asp_ID,
     (A.p_nombre || ' ' || A.s_nombre || ' ' || A.p_apellido || ' ' || A.d_apellido) as Nombre,
     P.prog_nombre,
@@ -405,8 +489,12 @@ async function getEstXprogFiltrado(filtro) {
     INNER JOIN 
         Requerimientos Req ON R.req_ID = Req.req_ID 
     WHERE 
-        I.periodo = '` + filtrado[2] + `'
-        and P.prog_ID = '` + filtrado[0] + `'
+        I.periodo = '` +
+      filtrado[2] +
+      `'
+        and P.prog_ID = '` +
+      filtrado[0] +
+      `'
     GROUP BY 
         I.asp_ID, A.p_nombre, A.s_nombre, A.p_apellido, A.d_apellido, P.prog_nombre, I.periodo, I.ins_ID;`;
     console.log("Se está ejecuntando " + query);
@@ -420,3 +508,258 @@ async function getEstXprogFiltrado(filtro) {
     console.log(error);
   }
 }
+
+async function getProgramaFiltrado(filtro) {
+  var filtrado = filtro.split(" - ");
+
+  try {
+    const client = new Client({
+      user: "postgres",
+      host: "localhost",
+      database: "Academia",
+      password: "13102003",
+      port: 5432,
+      //ssl: {
+      //rejectUnauthorized: false,
+      //},
+    });
+
+    await client.connect();
+    const query =
+      `select P.*, STRING_AGG(RP.req_ID, ', ') as Requisitos from programas P 
+    left join Requerimientos_programa RP on P.prog_ID = RP.prog_ID
+    where P.prog_ID = '` +
+      filtrado[0] +
+      `'
+    group by P.prog_ID `;
+
+    console.log("Se está ejecuntando " + query);
+
+    const res = await client.query(query);
+
+    await client.end();
+
+    return res.rows;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getAsignaturasPrograma(programa) {
+  var prog = programa.split(" - ");
+
+  try {
+    const client = new Client({
+      user: "postgres",
+      host: "localhost",
+      database: "Academia",
+      password: "13102003",
+      port: 5432,
+      //ssl: {
+      //rejectUnauthorized: false,
+      //},
+    });
+
+    await client.connect();
+    const query =
+      `select area_formacion as area_nombre, asign_nombre, 
+      carga_horaria from asignaturas
+      where prog_ID = '${prog[0]}' order by area_nombre, 
+      asign_nombre`;
+
+    console.log("Se está ejecuntando " + query);
+
+    const res = await client.query(query);
+
+    await client.end();
+
+    return res.rows;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getRequerimientos() {
+  try {
+    const client = new Client({
+      user: "postgres",
+      host: "localhost",
+      database: "Academia",
+      password: "13102003",
+      port: 5432,
+      //ssl: {
+      //rejectUnauthorized: false,
+      //},
+    });
+
+    await client.connect();
+    const query = `select req_id, req_nombre from requerimientos`;
+
+    console.log("Se está ejecuntando " + query);
+
+    const res = await client.query(query);
+
+    await client.end();
+
+    return res.rows;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function saveProgramaInDB(programaData) {
+  const id = programaData.prog_id;
+  const nombre = programaData.prog_nombre;
+  const descr = programaData.prog_descr;
+  const costo = programaData.prog_costo;
+  const requerimientos = programaData.requerimientos;
+
+  try {
+    const client = new Client({
+      user: "postgres",
+      host: "localhost",
+      database: "Academia",
+      password: "13102003",
+      port: 5432,
+    });
+
+    await client.connect();
+
+    // Obtener el número total de requerimientos
+    const numRequerimientos = requerimientos.length;
+
+    // Construir la consulta para insertar el programa
+    const programaQuery =
+      `INSERT INTO Programas VALUES 
+      ('${id}', '${nombre}', '${descr}', ${costo});`;
+
+    console.log("Se está ejecutando " + programaQuery);
+
+    // Ejecutar la consulta para insertar el programa
+    const resPrograma = await client.query(programaQuery);
+
+    // Construir la consulta para insertar los requerimientos
+    const requerimientosQuery =
+      `INSERT INTO Requerimientos_programa (req_prog_id, req_id, prog_id)
+       VALUES ${requerimientos.map((req, index) => `((SELECT
+        'RP' || MAX(CAST(SUBSTRING(req_prog_id, 3) AS INT)) + ${index + 1} 
+      FROM
+        requerimientos_programa),
+        '${req}', '${id}'
+       )`).join(', ')};`;
+
+    console.log("Se está ejecutando " + requerimientosQuery);
+
+    // Ejecutar la consulta para insertar los requerimientos
+    const resRequerimientos = await client.query(requerimientosQuery);
+
+    await client.end();
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function saveAsignaturaInDB(asignaturaData) {
+  const programa = asignaturaData.programa;
+  var prog = programa.split(" - ");
+  const prog_id = prog[0]
+  const area = asignaturaData.area;
+  const nombre = asignaturaData.nombre;
+  const carga = asignaturaData.carga;
+
+  try {
+    const client = new Client({
+      user: "postgres",
+      host: "localhost",
+      database: "Academia",
+      password: "13102003",
+      port: 5432,
+    });
+
+    await client.connect();
+
+    // Construir la consulta para insertar la asignatura
+    const AsignaturaQuery =
+      `
+      INSERT INTO Asignaturas VALUES (
+        (SELECT CAST(MAX(CAST(asign_ID AS INT)) + 1 AS VARCHAR(5))
+        FROM Asignaturas),
+        '${nombre}',
+        '${prog_id}',
+        '${area}',
+        ${carga});
+      `;
+
+    console.log("Se está ejecutando " + AsignaturaQuery);
+
+    // Ejecutar la consulta para insertar la asignatura
+    const resPrograma = await client.query(AsignaturaQuery);
+
+    await client.end();
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+async function updateProgramaInDB(programaData) {
+  const id = programaData.prog_id;
+  const nombre = programaData.prog_nombre;
+  const descr = programaData.prog_descr;
+  const costo = programaData.prog_costo;
+  const requerimientos = programaData.requerimientos;
+
+  try {
+    const client = new Client({
+      user: "postgres",
+      host: "localhost",
+      database: "Academia",
+      password: "13102003",
+      port: 5432,
+    });
+
+    await client.connect();
+
+    // Obtener el número total de requerimientos
+    const numRequerimientos = requerimientos.length;
+
+    // Construir la consulta para actualizar el programa
+    const updateQuery =
+      `UPDATE programas SET prog_nombre = '${nombre}', prog_descr = '${descr}', 
+      prog_costo = '${costo}'
+      WHERE prog_id = '${id}'`;
+
+    console.log("Se está ejecutando " + updateQuery);
+
+    // Ejecutar la consulta para insertar el programa
+    const resUpdatePrograma = await client.query(updateQuery);
+
+    const queryDeleteRequerimientos = `DELETE FROM Requerimientos_programa 
+    WHERE prog_id = '${id}'`;
+    console.log("Se está ejecutando " + queryDeleteRequerimientos);
+    const resDelRequerimientos = await client.query(queryDeleteRequerimientos);
+
+    // Construir la consulta para insertar los requerimientos
+    const requerimientosQuery =
+      `INSERT INTO Requerimientos_programa (req_prog_id, req_id, prog_id)
+       VALUES ${requerimientos.map((req, index) => `((SELECT
+        'RP' || MAX(CAST(SUBSTRING(req_prog_id, 3) AS INT)) + ${index + 1} 
+      FROM
+        requerimientos_programa),
+        '${req}', '${id}'
+       )`).join(', ')};`;
+
+    console.log("Se está ejecutando " + requerimientosQuery);
+
+    // Ejecutar la consulta para insertar los requerimientos
+    const resRequerimientos = await client.query(requerimientosQuery);
+
+    await client.end();
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+

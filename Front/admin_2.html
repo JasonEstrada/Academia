@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="titulo">Admin 2</title>
+  </head>
+  <body>
+    <div class="pageContainer">
+      <header>
+        <nav>
+          <a href="login.html">Inicio</a>
+          <a href="admin_1.html">Información del Periodo</a>
+        </nav>
+      </header>
+      <div class="tabla">
+        <h1>Programas</h1>
+        <table id="programasDataTable">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Costo</th>
+              <th scope="col">Requisitos</th>
+            </tr>
+          </thead>
+          <tbody id="programasDataTableTbody"></tbody>
+        </table>
+      </div>
+      <div>
+        <h2>Filtrar por programa</h2>
+        <form id="programaForm" action="#">
+          <label for="programa">Programa</label>
+          <select name="programa" id="programa">
+            <option value="todo">Todos</option>
+          </select>
+          <input type="submit" value="Enviar" />
+        </form>
+      </div>
+      <div>
+        <h1>Agregar programa</h1>
+        <form id="agregarProgramaForm" action="#">
+            <ul>
+              <li>
+                <label for="ID">ID del programa</label>
+                <input type="text" id="ID" name="ID" />
+              </li>
+              <li>
+                <label for="nombre">Nombre del programa</label>
+                <input type="text" id="nombre" name="nombre" />
+              </li>
+              <li>
+                <label for="descripcion">Descripción del programa</label>
+                <textarea id="descripcion" name="descripcion"></textarea>
+              </li>
+              <li>
+                <label for="costo">Costo del programa</label>
+                <input type="number" id="costo" name="costo" />
+              </li>
+              <li>
+                <label>
+                    Requerimientos
+                </label>
+                <select id="requerimientos" multiple></select>
+              </li>
+              <button onclick="agregarPrograma()">Enviar</button>
+            </ul>
+          </form>
+      </div>
+      <div>
+        <h1>Actualizar programa</h1>
+        <form id="updateProgramaForm" action="#">
+            <ul>
+              <li>
+                <label for="IDu">ID del programa</label>
+                <input type="text" id="IDu" name="IDu" />
+              </li>
+              <li>
+                <label for="nombreu">Nombre del programa</label>
+                <input type="text" id="nombreu" name="nombreu" />
+              </li>
+              <li>
+                <label for="descripcionu">Descripción del programa</label>
+                <textarea id="descripcionu" name="descripcionu"></textarea>
+              </li>
+              <li>
+                <label for="costou">Costo del programa</label>
+                <input type="number" id="costou" name="costou" />
+              </li>
+              <li>
+                <label>
+                    Requerimientos
+                </label>
+                <select id="requerimientosu" multiple></select>
+              </li>
+              <button onclick="actualizarPrograma()">Enviar</button>
+            </ul>
+          </form>
+      </div>
+      <div>
+        <h1>Asignaturas por programa</h1>
+        <h2>Seleccionar programa</h2>
+        <form id="programaAsigForm" action="#">
+          <label for="programaAsig">Programa</label>
+          <select name="programaAsig" id="programaAsig"></select>
+          <input type="submit" value="Enviar" />
+        </form>
+      </div>
+      <div class="tabla">
+        <table id="asigDataTable">
+          <thead>
+            <tr>
+              <th scope="col">Area de formación</th>
+              <th scope="col">Asignatura</th>
+              <th scope="col">Carga horaria</th>
+            </tr>
+          </thead>
+          <tbody id="asigDataTableTbody"></tbody>
+        </table>
+      </div>
+      <div>
+        <h2>Añadir asignatura</h2>
+        <ul>
+          <form id="asignaturaForm" action="#">
+            <li>
+              <label for="area">Area de formación</label>
+              <select name="area" id="area">
+                <option value="Básica">Básica</option>
+                <option value="Profesional">Profesional</option>
+                <option value="Énfasis">Énfasis</option>
+              </select>
+            </li>
+            <li>
+              <label for="nombreAsig">Asignatura</label>
+              <input type="text" id="nombreAsig" name="nombreAsig" />
+            </li>
+            <li>
+              <label for="cargaAsig">Carga horaria</label>
+              <input type="number" id="cargaAsig" name="cargaAsig" />
+            </li>
+            <button onclick="agregarAsignaturas()">Enviar</button>
+          </form>
+        </ul>
+      </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  nav > * {
+    display: block;
+    margin-top: 20px;
+    font-size: larger;
+  }
+
+  .pageContainer {
+    display: block;
+    justify-content: space-evenly;
+  }
+
+  #CreatePersonForm > * {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  #CreatePersonForm {
+    text-align: right;
+  }
+
+  .buttonContainer {
+    display: inline;
+    text-align: center;
+  }
+
+  tr > * {
+    padding: 10px;
+    border: 1px solid red;
+    text-align: center;
+  }
+</style>
+
+<script src="index2.js"></script>

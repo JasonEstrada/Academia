@@ -224,13 +224,12 @@ async function cargarFiltroPeriodo() {
 }
 
 async function cargarFiltroProgramas() {
-  const response = await fetch("http://127.0.0.1:3000/programas");
+  const response = await fetch("http://127.0.0.1:3000/programas?op=1");
   const programa = await response.json();
 
   var programaSelect = document.getElementById("programa");
   // Agregar las opciones al elemento select
   programa.forEach(function (programa) {
-    console.log(programa);
     var option = document.createElement("option");
     option.value = programa.programa;
     option.text = programa.programa;
