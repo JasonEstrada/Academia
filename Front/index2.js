@@ -207,6 +207,28 @@ async function agregarPrograma() {
   });
 }
 
+async function actualizarAsignatura() {
+  const asignaturaData = {
+    id: document.getElementById("IDau").value,
+    programa: document.getElementById("programaAsig").value,
+    area: document.getElementById("areau").value,
+    nombre: document.getElementById("nombreAsigu").value,
+    carga: document.getElementById("cargaAsigu").value,
+  };
+
+  const asignaturaDataJson = JSON.stringify(asignaturaData);
+
+  fetch("http://127.0.0.1:3000/actualizarAsignatura", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: asignaturaDataJson,
+  }).then((result) => {
+    document.getElementById("updateAsignaturaForm").reset();
+  });
+}
+
 async function agregarAsignaturas() {
   const asignaturaData = {
     programa: document.getElementById("programaAsig").value,
@@ -243,5 +265,23 @@ async function eliminarPrograma() {
     body: idDataJson,
   }).then((result) => {
     document.getElementById("deleteProgramaForm").reset();
+  });
+}
+
+async function eliminarAsignatura() {
+  const idData = {
+    asign_id: document.getElementById("IDda").value,
+  };
+
+  const idDataJson = JSON.stringify(idData);
+
+  fetch("http://127.0.0.1:3000/eliminarAsignatura", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: idDataJson,
+  }).then((result) => {
+    document.getElementById("deleteAsigForm").reset();
   });
 }

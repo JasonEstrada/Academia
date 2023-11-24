@@ -32,11 +32,24 @@ app.post("/actualizarPrograma", (req, res) => {
   res.send("Programa actualizado");
 });
 
+app.post("/actualizarAsignatura", (req, res) => {
+  const asignaturaData = req.body;
+  updateAsignaturaInDB(asignaturaData);
+  res.send("Asignatura actualizada");
+});
+
 app.post("/eliminarPrograma", (req, res) => {
   const idData = req.body;
   deleteProgramaInDB(idData);
   res.send("Programa eliminado");
 });
+
+app.post("/eliminarAsignatura", (req, res) => {
+  const idData = req.body;
+  deleteAsignaturaInDB(idData);
+  res.send("Asignatura eliminado");
+});
+
 
 app.get("/periodos", async (req, res) => {
   const periodos = await getPeriodos();
@@ -790,6 +803,71 @@ async function deleteProgramaInDB(idData) {
 
     // Ejecutar la consulta para insertar el programa
     const resUpdatePrograma = await client.query(deleteQuery);
+
+    await client.end();
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function deleteAsignaturaInDB(idData) {
+  const asign_id = idData.asign_id;
+
+  try {
+    const client = new Client({
+      user: "postgres",
+      host: "localhost",
+      database: "Academia",
+      password: "13102003",
+      port: 5432,
+    });
+
+    await client.connect();
+
+    const deleteQuery =
+      `delete from Asignaturas where asign_id = '${asign_id}'`;
+
+    console.log("Se está ejecutando " + deleteQuery);
+
+    // Ejecutar la consulta para insertar el programa
+    const resUpdatePrograma = await client.query(deleteQuery);
+
+    await client.end();
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function updateAsignaturaInDB(asignaturaData) {
+  const asign_ID = asignaturaData.id;
+  const programa = asignaturaData.programa;
+  var prog = programa.split(" - ");
+  const prog_id = prog[0]
+  const area = asignaturaData.area;
+  const nombre = asignaturaData.nombre;
+  const carga = asignaturaData.carga;
+
+  try {
+    const client = new Client({
+      user: "postgres",
+      host: "localhost",
+      database: "Academia",
+      password: "13102003",
+      port: 5432,
+    });
+
+    await client.connect();
+
+    const updateQuery =
+      `UPDATE Asignaturas set asign_nombre ='${nombre}', 
+      prog_id = '${prog_id}', area_formacion = '${area}',
+      carga_horaria = ${carga} where asign_id = '${asign_ID}'`;
+
+    console.log("Se está ejecutando " + updateQuery);
+
+    const resUpdatePrograma = await client.query(updateQuery);
 
     await client.end();
 

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -42,74 +41,70 @@
       <div>
         <h1>Agregar programa</h1>
         <form id="agregarProgramaForm" action="#">
-            <ul>
-              <li>
-                <label for="ID">ID del programa</label>
-                <input type="text" id="ID" name="ID" />
-              </li>
-              <li>
-                <label for="nombre">Nombre del programa</label>
-                <input type="text" id="nombre" name="nombre" />
-              </li>
-              <li>
-                <label for="descripcion">Descripción del programa</label>
-                <textarea id="descripcion" name="descripcion"></textarea>
-              </li>
-              <li>
-                <label for="costo">Costo del programa</label>
-                <input type="number" id="costo" name="costo" />
-              </li>
-              <li>
-                <label>
-                    Requerimientos
-                </label>
-                <select id="requerimientos" multiple></select>
-              </li>
-              <button onclick="agregarPrograma()">Enviar</button>
-            </ul>
-          </form>
+          <ul>
+            <li>
+              <label for="ID">ID del programa</label>
+              <input type="text" id="ID" name="ID" />
+            </li>
+            <li>
+              <label for="nombre">Nombre del programa</label>
+              <input type="text" id="nombre" name="nombre" />
+            </li>
+            <li>
+              <label for="descripcion">Descripción del programa</label>
+              <textarea id="descripcion" name="descripcion"></textarea>
+            </li>
+            <li>
+              <label for="costo">Costo del programa</label>
+              <input type="number" id="costo" name="costo" />
+            </li>
+            <li>
+              <label> Requerimientos </label>
+              <select id="requerimientos" multiple></select>
+            </li>
+            <button onclick="agregarPrograma()">Enviar</button>
+          </ul>
+        </form>
       </div>
       <div>
         <h1>Eliminar programa</h1>
         <form id="deleteProgramaForm" action="#">
-            <ul>
-              <li>
-                <label for="IDe">ID del programa</label>
-                <input type="text" id="IDe" name="IDe" />
-              </li>
-              <button onclick="eliminarPrograma()">Eliminar</button>
-            </ul>
-          </form>
+          <ul>
+            <li>
+              <label for="IDe">ID del programa</label>
+              <input type="text" id="IDe" name="IDe" />
+            </li>
+            <button onclick="eliminarPrograma()">Eliminar</button>
+          </ul>
+        </form>
       </div>
       <div>
         <h1>Actualizar programa</h1>
         <form id="updateProgramaForm" action="#">
-            <ul>
-              <li>
-                <label for="IDu">ID del programa</label>
-                <input type="text" id="IDu" name="IDu" />
-              </li>
-              <li>
-                <label for="nombreu">Nombre del programa</label>
-                <input type="text" id="nombreu" name="nombreu" />
-              </li>
-              <li>
-                <label for="descripcionu">Descripción del programa</label>
-                <textarea id="descripcionu" name="descripcionu"></textarea>
-              </li>
-              <li>
-                <label for="costou">Costo del programa</label>
-                <input type="number" id="costou" name="costou" />
-              </li>
-              <li>
-                <label>
-                    Requerimientos
-                </label>
-                <select id="requerimientosu" multiple></select>
-              </li>
-              <button onclick="actualizarPrograma()">Enviar</button>
-            </ul>
-          </form>
+          <ul>
+            <li>
+              <label for="IDu">ID del programa</label>
+              <input type="text" id="IDu" name="IDu" />
+            </li>
+            <li>
+              <label for="nombreu">Nombre del programa</label>
+              <input type="text" id="nombreu" name="nombreu" />
+            </li>
+            <li>
+              <label for="descripcionu">Descripción del programa</label>
+              <textarea id="descripcionu" name="descripcionu"></textarea>
+            </li>
+            <li>
+              <label for="costou">Costo del programa</label>
+              <input type="number" id="costou" name="costou" />
+            </li>
+            <li>
+              <label> Requerimientos </label>
+              <select id="requerimientosu" multiple></select>
+            </li>
+            <button onclick="actualizarPrograma()">Enviar</button>
+          </ul>
+        </form>
       </div>
       <div>
         <h1>Asignaturas por programa</h1>
@@ -157,6 +152,45 @@
           </form>
         </ul>
       </div>
+      <div>
+        <h1>Eliminar asignatura</h1>
+        <form id="deleteAsigForm" action="#">
+          <ul>
+            <li>
+              <label for="IDda">ID de la asignatura</label>
+              <input type="text" id="IDda" name="IDda" />
+            </li>
+            <button onclick="eliminarAsignatura()">Eliminar</button>
+          </ul>
+        </form>
+      </div>
+      <div>
+        <h2>Actualizar asignatura</h2>
+        <ul>
+          <form id="updateAsignaturaForm" action="#">
+            <li>
+              <label for="IDau">ID de la asignatura</label>
+              <input type="text" id="IDau" name="IDau" />
+            </li>
+            <li>
+              <label for="areau">Area de formación</label>
+              <select name="areau" id="areau">
+                <option value="Básica">Básica</option>
+                <option value="Profesional">Profesional</option>
+                <option value="Énfasis">Énfasis</option>
+              </select>
+            </li>
+            <li>
+              <label for="nombreAsigu">Asignatura</label>
+              <input type="text" id="nombreAsigu" name="nombreAsigu" />
+            </li>
+            <li>
+              <label for="cargaAsigu">Carga horaria</label>
+              <input type="number" id="cargaAsigu" name="cargaAsigu" />
+            </li>
+            <button onclick="actualizarAsignatura()">Enviar</button>
+          </form>
+        </ul>
       </div>
     </div>
   </body>
