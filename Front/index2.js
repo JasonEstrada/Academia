@@ -82,10 +82,12 @@ function addPersonToTable(person, table) {
     const cell1 = row.insertCell(0);
     const cell2 = row.insertCell(1);
     const cell3 = row.insertCell(2);
+    const cell4 = row.insertCell(2);
 
-    cell1.innerHTML = person.area_nombre;
-    cell2.innerHTML = person.asign_nombre;
-    cell3.innerHTML = person.carga_horaria;
+    cell1.innerHTML = person.asign_id;
+    cell2.innerHTML = person.area_nombre;
+    cell3.innerHTML = person.asign_nombre;
+    cell4.innerHTML = person.carga_horaria;
   }
 }
 
@@ -135,7 +137,7 @@ async function cargarListaReq() {
   });
 }
 
-function actualizarPrograma() {
+async function actualizarPrograma() {
   const programaData = {
     prog_id: document.getElementById("IDu").value,
     prog_nombre: document.getElementById("nombreu").value,
@@ -170,7 +172,7 @@ function actualizarPrograma() {
   });
 }
 
-function agregarPrograma() {
+async function agregarPrograma() {
   const programaData = {
     prog_id: document.getElementById("ID").value,
     prog_nombre: document.getElementById("nombre").value,
@@ -205,7 +207,7 @@ function agregarPrograma() {
   });
 }
 
-function agregarAsignaturas() {
+async function agregarAsignaturas() {
   const asignaturaData = {
     programa: document.getElementById("programaAsig").value,
     area: document.getElementById("area").value,
@@ -214,7 +216,6 @@ function agregarAsignaturas() {
   };
 
   const asignaturaDataJson = JSON.stringify(asignaturaData);
-  console.log(asignaturaDataJson)
 
   fetch("http://127.0.0.1:3000/agregarAsignatura", {
     method: "POST",
@@ -224,5 +225,23 @@ function agregarAsignaturas() {
     body: asignaturaDataJson,
   }).then((result) => {
     document.getElementById("asignaturaForm").reset();
+  });
+}
+
+async function eliminarPrograma() {
+  const idData = {
+    prog_id: document.getElementById("IDe").value,
+  };
+
+  const idDataJson = JSON.stringify(idData);
+
+  fetch("http://127.0.0.1:3000/eliminarPrograma", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: idDataJson,
+  }).then((result) => {
+    document.getElementById("deleteProgramaForm").reset();
   });
 }

@@ -70,6 +70,18 @@
           </form>
       </div>
       <div>
+        <h1>Eliminar programa</h1>
+        <form id="deleteProgramaForm" action="#">
+            <ul>
+              <li>
+                <label for="IDe">ID del programa</label>
+                <input type="text" id="IDe" name="IDe" />
+              </li>
+              <button onclick="eliminarPrograma()">Eliminar</button>
+            </ul>
+          </form>
+      </div>
+      <div>
         <h1>Actualizar programa</h1>
         <form id="updateProgramaForm" action="#">
             <ul>
@@ -112,6 +124,7 @@
         <table id="asigDataTable">
           <thead>
             <tr>
+              <th scope="col">ID</th>
               <th scope="col">Area de formación</th>
               <th scope="col">Asignatura</th>
               <th scope="col">Carga horaria</th>

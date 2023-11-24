@@ -32,6 +32,12 @@ app.post("/actualizarPrograma", (req, res) => {
   res.send("Programa actualizado");
 });
 
+app.post("/eliminarPrograma", (req, res) => {
+  const idData = req.body;
+  deleteProgramaInDB(idData);
+  res.send("Programa eliminado");
+});
+
 app.get("/periodos", async (req, res) => {
   const periodos = await getPeriodos();
   res.send(periodos);
@@ -562,7 +568,7 @@ async function getAsignaturasPrograma(programa) {
 
     await client.connect();
     const query =
-      `select area_formacion as area_nombre, asign_nombre, 
+      `select asign_ID, area_formacion as area_nombre, asign_nombre, 
       carga_horaria from asignaturas
       where prog_ID = '${prog[0]}' order by area_nombre, 
       asign_nombre`;
@@ -763,3 +769,31 @@ async function updateProgramaInDB(programaData) {
   }
 }
 
+async function deleteProgramaInDB(idData) {
+  const prog_id = idData.prog_id;
+
+  try {
+    const client = new Client({
+      user: "postgres",
+      host: "localhost",
+      database: "Academia",
+      password: "13102003",
+      port: 5432,
+    });
+
+    await client.connect();
+
+    const deleteQuery =
+      `delete from Programas where prog_id = '${prog_id}'`;
+
+    console.log("Se está ejecutando " + deleteQuery);
+
+    // Ejecutar la consulta para insertar el programa
+    const resUpdatePrograma = await client.query(deleteQuery);
+
+    await client.end();
+
+  } catch (error) {
+    console.log(error);
+  }
+}
