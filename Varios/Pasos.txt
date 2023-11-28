@@ -1,5 +1,0 @@
-2. Interfaz usuario
-    2.1. Crear usuarios
-    2.2. Guardar info de "queremos conocerte"
-    2.3. Pagos
-3. Crud admin
