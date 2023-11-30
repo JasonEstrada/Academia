@@ -12,7 +12,9 @@ async function enviar(progID) {
     body: pasoJson,
   }).then((result) => {
     console.log("Termine paso 2.");
+    window.location.href = "portal.html";
   });
+  
 }
 
 async function cambiarContenido(index) {

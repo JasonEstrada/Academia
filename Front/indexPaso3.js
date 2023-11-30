@@ -28,6 +28,7 @@ function pagar() {
     body: pasoJson,
   }).then((result) => {
     console.log("Termine paso 3.");
+    window.location.href = "portal.html";
   });
 }
 

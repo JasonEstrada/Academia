@@ -21,6 +21,7 @@ function guardarInfoRegistro() {
     body: userDataJson,
   }).then((result) => {
     document.getElementById("regUser").reset();
+    window.location.href = "login.html";
   });
 }
 

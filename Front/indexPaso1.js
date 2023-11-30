@@ -42,6 +42,7 @@ async function guardarPaso1() {
         body: userDataJson,
     }).then((result) => {
         console.log("Termine paso 1.");
+        //window.location.href = "portal.html";
     });
 }
 

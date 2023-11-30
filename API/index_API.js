@@ -371,7 +371,7 @@ async function saveInsInDB(userData) {
         const res = await client.query(query);
         await client.end();
     } catch (error) {
-        console.log("Saltó un error saveInsInDB")
+        console.log(error)
     }
 }
 
