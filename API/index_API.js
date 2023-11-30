@@ -8,12 +8,97 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+var userLogged;
+var progFinal;
+var inscripcion;
+
+//User
 app.post("/registerUser", (req, res) => {
   const userData = req.body;
   saveUserInDB(userData);
   res.send("Usuario registrado");
 });
 
+app.get("/loginUser", async (req, res) => {
+    const userID = req.query.userId;
+    const pwd = await getPassword(userID);
+    res.send(pwd);
+});
+
+app.get("/checkDir", async (req, res) => {
+    const dirIDs = await checkDirInDB();
+    res.send(dirIDs);
+});
+
+app.get("/getMaxDir", async (req, res) => {
+    const dirMaxID = await getMaxIdDir();
+    res.send(dirMaxID);
+});
+
+app.get("/getMaxIns", async (req, res) => {
+    const insMaxID = await getMaxIdIns();
+    res.send(insMaxID);
+});
+
+app.post("/guardarPaso", (req, res) => {
+    const userData = req.body;
+    saveInsInDB(userData);
+    res.send("");
+});
+
+app.post("/guardarInfoTel", (req, res) => {
+    const userData = req.body;
+    saveTelInDB(userData.tel, userData.tipo);
+    res.send("tel saved");
+});
+
+app.post("/guardarInfoDir", (req, res) => {
+    const userData = req.body;
+    saveDirInDB(userData);
+    res.send("dir registered");
+});
+
+app.get("/obtenerProgramas", async (req, res) => {
+    const programas = await getProgramasInUser();
+    res.send(programas);
+});
+
+app.get("/obtenerInfoPrograma", async (req, res) => {
+    const programa = await getInfoPrograma();
+    res.send(programa);
+});
+
+app.get("/obtenerRequerimientos", async (req, res) => {
+    const progID = req.query.progId;
+    const reqs = await getReqs(progID);
+    res.send(reqs);
+});
+
+app.get("/obtenerInscripcion", async (req, res) => {
+    const ins = await getInscripcion();
+    console.log(ins);
+    res.send(ins);
+});
+
+app.get("/obtenerNombres", async (req, res) => {
+    const nombres = await getNombres();
+    res.send(nombres);
+});
+
+app.get("/obtenerAsignaturas", async (req, res) => {
+    const progID = req.query.progId;
+    const asigs = await getAsigs(progID);
+    res.send(asigs);
+});
+
+app.post("/updatePaso", (req, res) => {
+    const progID = req.body.prog_id;
+    const paso = req.body.paso;
+    updateIns(paso);
+    res.send("");
+});
+
+//Admin
 app.post("/agregarPrograma", (req, res) => {
   const programaData = req.body;
   saveProgramaInDB(programaData);
@@ -128,6 +213,7 @@ app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
 
+//User
 async function saveUserInDB(userData) {
   id = userData.us;
   name1 = userData.n1;
@@ -173,6 +259,380 @@ async function saveUserInDB(userData) {
   }
 }
 
+async function getPassword(userID) {
+    try {
+        userLogged = userID
+
+        const client = new Client({
+            user: "postgres",
+            host: "localhost",
+            database: "Academia",
+            password: "13102003",
+            port: 5432,
+        });
+        await client.connect();
+
+        const query = "SELECT pwd FROM Aspirantes WHERE asp_id = '" + userID + "'";
+
+        console.log("se está ejecuntando " + query);
+        const res = await client.query(query);
+        await client.end();
+        return res.rows;
+    } catch (error) {
+        console.log("Saltó un error PWD")
+    }
+}
+
+async function saveUserInDB(userData) {
+    id = userData.user
+    pwd = userData.pwd
+    n1 = userData.n1
+    n2 = userData.n2
+    s1 = userData.s1
+    s2 = userData.s2
+
+    try {
+        const client = new Client({
+            user: "postgres",
+            host: "localhost",
+            database: "Academia",
+            password: "13102003",
+            port: 5432,
+        });
+        await client.connect();
+
+        const query = "INSERT INTO Aspirantes VALUES ('" + id + "', '" + n1 + "', '" + n2 + "', '" + s1 + "', '" + s2 + "', '" + pwd + "');";
+
+        console.log("se está ejecuntando " + query);
+        const res = await client.query(query);
+        await client.end();
+    } catch (error) {
+        console.log("Saltó un error saveUserInDB")
+    }
+}
+
+async function saveDirInDB(userData) {
+    console.log("Entre saveDir");
+    console.log("userLogged: " + userLogged);
+    id = userData.id;
+    dir = userData.dir;
+    tipo = userData.tipo;
+    post = userData.post;
+    mun = userData.mun;
+    dep = userData.dep;
+
+    try {
+        const client = new Client({
+            user: "postgres",
+            host: "localhost",
+            database: "Academia",
+            password: "13102003",
+            port: 5432,
+        });
+        await client.connect();
+
+        const query1 = "INSERT INTO direcciones VALUES ('" + id + "', '" + dir + "', '" + post + "', '" + mun + "', '" + dep + "', '" + tipo + "');";
+        console.log("se está ejecuntando " + query1);
+        const res = await client.query(query1);
+
+        const query2 = "INSERT INTO residencias VALUES ('" + id + "', '" + userLogged + "');";
+        console.log("se está ejecuntando " + query2);
+        const res2 = await client.query(query2);
+
+        await client.end();
+    } catch (error) {
+        console.log("Saltó un error saveDirInDB")
+    }
+}
+
+async function saveInsInDB(userData) {
+    insId = userData.insId;
+    prog_id = userData.prog_id;
+    asp_id = userLogged;
+    paso1 = userData.paso1;
+    paso2 = userData.paso2;
+    paso3 = userData.paso3;
+    periodo = userData.periodo;
+
+    inscripcion = insId;
+
+    try {
+        const client = new Client({
+            user: "postgres",
+            host: "localhost",
+            database: "Academia",
+            password: "13102003",
+            port: 5432,
+        });
+        await client.connect();
+
+        const query = "INSERT INTO inscripciones VALUES ('" + insId + "', " + prog_id + ", '" + asp_id + "', '" + paso1 + "', '" + paso2 + "', '" + paso3 + "', '" + periodo + "');";
+        console.log("se está ejecuntando " + query);
+        const res = await client.query(query);
+        await client.end();
+    } catch (error) {
+        console.log("Saltó un error saveInsInDB")
+    }
+}
+
+async function saveTelInDB(tel, tipo) {
+    console.log("Entre saveTel")
+    console.log("userLogged: " + userLogged);
+
+    try {
+        const client = new Client({
+            user: "postgres",
+            host: "localhost",
+            database: "Academia",
+            password: "13102003",
+            port: 5432,
+        });
+        await client.connect();
+
+        const query = "INSERT INTO telefonos VALUES ('" + userLogged + "', '" + tel + "', '" + tipo + "');";
+        console.log("se está ejecuntando " + query);
+        const res = await client.query(query);
+
+        await client.end();
+    } catch (error) {
+        console.log("Saltó un error saveTelInDB")
+    }
+}
+
+async function checkDirInDB(dep, mun) {
+    try {
+        const client = new Client({
+            user: "postgres",
+            host: "localhost",
+            database: "Academia",
+            password: "13102003",
+            port: 5432,
+        });
+        await client.connect();
+
+        const query = "SELECT dir_id FROM residencias WHERE asp_id = '" + userLogged + "';";
+        console.log("se está ejecuntando " + query);
+        const res = await client.query(query);
+
+        await client.end();
+        return res.rows;
+    } catch (error) {
+        console.log("Saltó un error checkDirInDB")
+    }
+}
+
+async function getMaxIdDir() {
+    try {
+        const client = new Client({
+            user: "postgres",
+            host: "localhost",
+            database: "Academia",
+            password: "13102003",
+            port: 5432,
+        });
+        await client.connect();
+
+        const query = "SELECT MAX(dir_id) vmax FROM direcciones;";
+        console.log("se está ejecuntando " + query);
+        const res = await client.query(query);
+
+        await client.end();
+        return res.rows;
+    } catch (error) {
+        console.log("Saltó un error getMaxIdDir")
+    }
+}
+
+async function getMaxIdIns() {
+    try {
+        const client = new Client({
+            user: "postgres",
+            host: "localhost",
+            database: "Academia",
+            password: "13102003",
+            port: 5432,
+        });
+        await client.connect();
+
+        const query = "SELECT MAX(ins_id) vmax FROM inscripciones;";
+        console.log("se está ejecuntando " + query);
+        const res = await client.query(query);
+
+        await client.end();
+        return res.rows;
+    } catch (error) {
+        console.log("Saltó un error getMaxIdIns")
+    }
+}
+
+async function getProgramasInUser() {
+    try {
+        const client = new Client({
+            user: "postgres",
+            host: "localhost",
+            database: "Academia",
+            password: "13102003",
+            port: 5432,
+        });
+        await client.connect();
+
+        const query = "SELECT * FROM programas;";
+        console.log("se está ejecuntando " + query);
+        const res = await client.query(query);
+
+        await client.end();
+        return res.rows;
+    } catch (error) {
+        console.log("Saltó un error getProgramas")
+    }
+}
+
+async function getInfoPrograma() {
+    try {
+        const client = new Client({
+            user: "postgres",
+            host: "localhost",
+            database: "Academia",
+            password: "13102003",
+            port: 5432,
+        });
+        await client.connect();
+
+        const query = "SELECT * FROM programas WHERE prog_id = '" + progFinal + "';";
+        console.log("se está ejecuntando " + query);
+        const res = await client.query(query);
+
+        await client.end();
+        return res.rows;
+    } catch (error) {
+        console.log("Saltó un error getProgramas")
+    }
+}
+
+async function getReqs(prog_id) {
+    progFinal = prog_id;
+    try {
+        const client = new Client({
+            user: "postgres",
+            host: "localhost",
+            database: "Academia",
+            password: "13102003",
+            port: 5432,
+        });
+        await client.connect();
+
+        const query = "SELECT rp.prog_id, r.req_id, r.req_nombre FROM requerimientos_programa rp JOIN requerimientos r ON rp.req_id = r.req_id AND rp.prog_id = '" + prog_id + "';";
+        console.log("se está ejecuntando " + query);
+        const res = await client.query(query);
+
+        await client.end();
+        return res.rows;
+    } catch (error) {
+        console.log("Saltó un error getReqs")
+    }
+}
+
+async function getAsigs(prog_id) {
+    try {
+        const client = new Client({
+            user: "postgres",
+            host: "localhost",
+            database: "Academia",
+            password: "13102003",
+            port: 5432,
+        });
+        await client.connect();
+
+        const query = "SELECT a.asign_nombre, a.area_formacion, a.carga_horaria FROM Asignaturas a WHERE prog_id = '" + prog_id + "'";
+        console.log("se está ejecuntando " + query);
+        const res = await client.query(query);
+
+        await client.end();
+        return res.rows;
+    } catch (error) {
+        console.log("Saltó un error getAsigs")
+    }
+}
+
+async function getNombres() {
+    try {
+        const client = new Client({
+            user: "postgres",
+            host: "localhost",
+            database: "Academia",
+            password: "13102003",
+            port: 5432,
+        });
+        await client.connect();
+
+        const query = "SELECT p_nombre, s_nombre, p_apellido, d_apellido FROM aspirantes WHERE asp_id = '" + userLogged + "'";
+        console.log("se está ejecuntando " + query);
+        const res = await client.query(query);
+
+        await client.end();
+        return res.rows;
+    } catch (error) {
+        console.log("Saltó un error getNombres")
+    }
+}
+
+async function getInscripcion() {
+    const response = {
+        ins_id: 0
+    } 
+    try {
+        const client = new Client({
+            user: "postgres",
+            host: "localhost",
+            database: "Academia",
+            password: "13102003",
+            port: 5432,
+        });
+        if (inscripcion >= 1) {
+            await client.connect();
+
+
+            query = "SELECT * FROM inscripciones WHERE ins_id = '" + inscripcion + "'";
+            console.log("se está ejecuntando " + query);
+            const res = await client.query(query);
+
+            await client.end();
+            return res.rows;
+        } else {
+            return response;
+        }
+    } catch (error) {
+        console.log("Saltó un error getInscripciones")
+    }
+}
+
+async function updateIns(paso) {
+    try {
+        const client = new Client({
+            user: "postgres",
+            host: "localhost",
+            database: "Academia",
+            password: "13102003",
+            port: 5432,
+        });
+        await client.connect();
+
+        if (paso == 2) {
+            const query = "UPDATE inscripciones SET prog_id='" + progFinal + "', paso2 = 'Hecho' WHERE ins_id = '" + inscripcion + "';";
+            console.log("se está ejecuntando " + query);
+            const res = await client.query(query);
+        } else {
+            const query = "UPDATE inscripciones SET paso3 = 'Hecho' WHERE ins_id = '" + inscripcion + "';";
+            console.log("se está ejecuntando " + query);
+            const res = await client.query(query);
+        }
+        await client.end();
+    } catch (error) {
+        console.log("Saltó un error updateIns")
+    }
+}
+
+//Admin
 async function getPeriodos() {
   try {
     const client = new Client({
