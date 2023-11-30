@@ -38,7 +38,11 @@ async function guardarInfoLogin() {
 
   if (pwdR == userData.pwd) {
     console.log("ADELANTE");
-    window.location.href = "portal.html";
+    if  (userData.user == "admin") {
+      window.location.href = "admin_2.html";
+    } else {
+      window.location.href = "portal.html";
+    }
   }
   else if (pwdR == "-userNotFound-")
     alert("Usuario inexistente");
